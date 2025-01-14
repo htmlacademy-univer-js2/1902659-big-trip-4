@@ -1,9 +1,9 @@
 import { createElement } from "../render";
-import { createCreatePointTemplate } from "../template/create-point-template";
+import { createEditPointTemplate } from "../template/edit-point-template";
 
-export default class CreatePointView {
+export default class EditPointView {
   getTemplate() {
-    return createCreatePointTemplate;
+    return createEditPointTemplate();
   }
 
   getElement() {

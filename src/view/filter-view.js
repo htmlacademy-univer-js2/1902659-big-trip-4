@@ -1,9 +1,9 @@
-import { createElement } from "../render";
-import { createCreatePointTemplate } from "../template/create-point-template";
+import { createElement } from "../render.js";
+import { createFilterTemplate } from "../template/filter-template.js";
 
-export default class CreatePointView {
+export default class FilterView {
   getTemplate() {
-    return createCreatePointTemplate;
+    return createFilterTemplate();
   }
 
   getElement() {

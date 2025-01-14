@@ -1,9 +1,9 @@
-import { createElement } from "../render";
-import { createCreatePointTemplate } from "../template/create-point-template";
+import { createElement } from "../render.js";
+import { createSortTemplate } from "../template/sort-template.js";
 
-export default class CreatePointView {
+export default class SortView {
   getTemplate() {
-    return createCreatePointTemplate;
+    return createSortTemplate();
   }
 
   getElement() {

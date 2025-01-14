@@ -1,9 +1,9 @@
-import { createElement } from "../render";
-import { createCreatePointTemplate } from "../template/create-point-template";
+import { createElement } from "../render.js";
+import { createWaypointTemplate } from "../template/waypoint-template.js";
 
-export default class CreatePointView {
+export default class WaypointView {
   getTemplate() {
-    return createCreatePointTemplate;
+    return createWaypointTemplate();
   }
 
   getElement() {

@@ -1,9 +1,9 @@
-import { createElement } from "../render";
-import { createCreatePointTemplate } from "../template/create-point-template";
+import { createElement } from "../render.js";
+import { createEventListTemplate } from "../template/event-list-template.js";
 
-export default class CreatePointView {
+export default class EventListView {
   getTemplate() {
-    return createCreatePointTemplate;
+    return createEventListTemplate();
   }
 
   getElement() {
