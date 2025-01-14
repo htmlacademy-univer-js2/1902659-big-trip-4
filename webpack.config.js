@@ -25,7 +25,7 @@ module.exports = {
       ],
     }),
     new HtmlPlugin({
-      template: "./src/index.html",
+      template: "./public/index.html",
     }),
   ],
   module: {
