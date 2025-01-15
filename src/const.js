@@ -17,4 +17,10 @@ Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis 
 Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.
 Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`;
 
-export { EVENTS, CITIES, pointDescription };
+const SortType = {
+  DATE_DOWN: "date-down",
+  TIME_DOWN: "time-down",
+  PRICE_DOWN: "price-down",
+};
+
+export { EVENTS, CITIES, pointDescription, SortType };

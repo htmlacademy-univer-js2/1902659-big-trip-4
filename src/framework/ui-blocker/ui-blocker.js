@@ -1,4 +1,4 @@
-import './ui-blocker.css';
+import "./ui-blocker.css";
 
 /**
  * Класс для блокировки интерфейса
@@ -27,12 +27,12 @@ export default class UiBlocker {
    * @param {number} config.lowerLimit Время до блокировки интерфейса в миллисекундах. Если вызвать метод unblock раньше, то интерфейс заблокирован не будет
    * @param {number} config.upperLimit Минимальное время блокировки в миллисекундах. Минимальная длительность блокировки
    */
-  constructor({lowerLimit, upperLimit}) {
+  constructor({ lowerLimit, upperLimit }) {
     this.#lowerLimit = lowerLimit;
     this.#upperLimit = upperLimit;
 
-    this.#element = document.createElement('div');
-    this.#element.classList.add('ui-blocker');
+    this.#element = document.createElement("div");
+    this.#element.classList.add("ui-blocker");
     document.body.append(this.#element);
   }
 
@@ -64,11 +64,11 @@ export default class UiBlocker {
 
   /** Метод, добавляющий CSS-класс элементу */
   #addClass = () => {
-    this.#element.classList.add('ui-blocker--on');
+    this.#element.classList.add("ui-blocker--on");
   };
 
   /** Метод, убирающий CSS-класс с элемента */
   #removeClass = () => {
-    this.#element.classList.remove('ui-blocker--on');
+    this.#element.classList.remove("ui-blocker--on");
   };
 }

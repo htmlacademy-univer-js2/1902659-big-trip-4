@@ -1,11 +1,11 @@
-import AbstractView from './view/abstract-view.js';
+import AbstractView from "./view/abstract-view.js";
 
 /** @enum {string} Перечисление возможных позиций для отрисовки */
 const RenderPosition = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
+  BEFOREBEGIN: "beforebegin",
+  AFTERBEGIN: "afterbegin",
+  BEFOREEND: "beforeend",
+  AFTEREND: "afterend",
 };
 
 /**
@@ -14,7 +14,7 @@ const RenderPosition = {
  * @returns {HTMLElement} Созданный элемент
  */
 function createElement(template) {
-  const newElement = document.createElement('div');
+  const newElement = document.createElement("div");
   newElement.innerHTML = template;
 
   return newElement.firstElementChild;
@@ -28,11 +28,11 @@ function createElement(template) {
  */
 function render(component, container, place = RenderPosition.BEFOREEND) {
   if (!(component instanceof AbstractView)) {
-    throw new Error('Can render only components');
+    throw new Error("Can render only components");
   }
 
   if (container === null) {
-    throw new Error('Container element doesn\'t exist');
+    throw new Error("Container element doesn't exist");
   }
 
   container.insertAdjacentElement(place, component.element);
@@ -44,8 +44,13 @@ function render(component, container, place = RenderPosition.BEFOREEND) {
  * @param {AbstractView} oldComponent Компонент, который нужно скрыть
  */
 function replace(newComponent, oldComponent) {
-  if (!(newComponent instanceof AbstractView && oldComponent instanceof AbstractView)) {
-    throw new Error('Can replace only components');
+  if (
+    !(
+      newComponent instanceof AbstractView &&
+      oldComponent instanceof AbstractView
+    )
+  ) {
+    throw new Error("Can replace only components");
   }
 
   const newElement = newComponent.element;
@@ -54,7 +59,7 @@ function replace(newComponent, oldComponent) {
   const parent = oldElement.parentElement;
 
   if (parent === null) {
-    throw new Error('Parent element doesn\'t exist');
+    throw new Error("Parent element doesn't exist");
   }
 
   parent.replaceChild(newElement, oldElement);
@@ -70,11 +75,11 @@ function remove(component) {
   }
 
   if (!(component instanceof AbstractView)) {
-    throw new Error('Can remove only components');
+    throw new Error("Can remove only components");
   }
 
   component.element.remove();
   component.removeElement();
 }
 
-export {RenderPosition, createElement, render, replace, remove};
+export { RenderPosition, createElement, render, replace, remove };

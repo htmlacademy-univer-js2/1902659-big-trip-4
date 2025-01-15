@@ -1,14 +1,15 @@
-import { humanizeTaskDueDate } from "../utils";
+import { humanizePointDate, getDateDifference } from "../utils";
 import { findDestination } from "../mock/point";
 import { findSpecialOffer } from "../mock/point";
 
 function createWaypointTemplate(point) {
   const { basePrice, dateFrom, dateTo, destination, isFavorite, offers, type } =
     point;
-  const dateF = humanizeTaskDueDate(dateFrom);
-  const dateT = humanizeTaskDueDate(dateTo);
+  const dateF = humanizePointDate(dateFrom);
+  const dateT = humanizePointDate(dateTo);
   const destName = findDestination(destination).name;
   const offer = findSpecialOffer(type, offers[0]);
+  const eventDuration = getDateDifference(dateFrom, dateTo);
   const isFavoritePoint = isFavorite ? " event__favorite-btn--active" : "";
   return `<li class="trip-events__item">
               <div class="event">
@@ -23,7 +24,7 @@ function createWaypointTemplate(point) {
                     &mdash;
                     <time class="event__end-time" datetime="${dateT}">${dateT}</time>
                   </p>
-                  <p class="event__duration">30M</p>
+                  <p class="event__duration">${eventDuration}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
