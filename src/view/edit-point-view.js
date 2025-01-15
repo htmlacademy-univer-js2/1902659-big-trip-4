@@ -2,8 +2,12 @@ import { createElement } from "../render";
 import { createEditPointTemplate } from "../template/edit-point-template";
 
 export default class EditPointView {
+  constructor({ point }) {
+    this.point = point;
+  }
+
   getTemplate() {
-    return createEditPointTemplate();
+    return createEditPointTemplate(this.point);
   }
 
   getElement() {
