@@ -3,7 +3,7 @@ import { getRandomPoint } from "../mock/point";
 const POINT_COUNT = 3;
 
 export default class PointsModel {
-  points = Array.from(
+  #points = Array.from(
     {
       length: POINT_COUNT,
     },
@@ -11,6 +11,6 @@ export default class PointsModel {
   );
 
   getPoints() {
-    return this.points;
+    return this.#points;
   }
 }
