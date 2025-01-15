@@ -1,5 +1,5 @@
-import { humanizeTaskDueDate } from "../utils";
-import { getRandomCity } from "../mock/point";
+import { humanizeTaskDueDate } from "../utils.js";
+import { getRandomCity } from "../mock/point.js";
 
 function createTripInfoTemplate() {
   const city1 = getRandomCity();
@@ -9,16 +9,16 @@ function createTripInfoTemplate() {
   const date2 = humanizeTaskDueDate("2019-07-11T11:22:13.375Z");
   const total = 2000;
   return `<section class="trip-main__trip-info  trip-info">
-          <div class="trip-info__main">
-            <h1 class="trip-info__title">${city1} &mdash; ${city2} &mdash; ${city3}</h1>
+            <div class="trip-info__main">
+              <h1 class="trip-info__title">${city1} &mdash; ${city2} &mdash; ${city3}</h1>
 
-            <p class="trip-info__dates">${date1}&nbsp;&mdash;&nbsp;${date2}</p>
-          </div>
+              <p class="trip-info__dates">${date1}&nbsp;&mdash;&nbsp;${date2}</p>
+            </div>
 
-          <p class="trip-info__cost">
-            Total: &euro;&nbsp;<span class="trip-info__cost-value">${total}</span>
-          </p>
-        </section>`;
+            <p class="trip-info__cost">
+              Total: &euro;&nbsp;<span class="trip-info__cost-value">${total}</span>
+            </p>
+          </section>`;
 }
 
 export { createTripInfoTemplate };
