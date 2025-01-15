@@ -1,5 +1,6 @@
 import { getRandomArrayElement } from "../utils.js";
 import { CITIES } from "../const.js";
+import { nanoid } from "nanoid";
 
 const emptyPoint = [
   {
@@ -111,7 +112,10 @@ function getRandomCity() {
 }
 
 function getRandomPoint() {
-  return getRandomArrayElement(mockPoints);
+  return {
+    id: nanoid(),
+    ...getRandomArrayElement(mockPoints),
+  };
 }
 
 function findDestination(destId) {
