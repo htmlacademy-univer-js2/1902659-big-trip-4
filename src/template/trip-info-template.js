@@ -1,12 +1,12 @@
-import { humanizeTaskDueDate } from "../utils.js";
+import { humanizePointDate } from "../utils.js";
 import { getRandomCity } from "../mock/point.js";
 
 function createTripInfoTemplate() {
   const city1 = getRandomCity();
   const city2 = getRandomCity();
   const city3 = getRandomCity();
-  const date1 = humanizeTaskDueDate("2019-07-10T22:55:56.845Z");
-  const date2 = humanizeTaskDueDate("2019-07-11T11:22:13.375Z");
+  const date1 = humanizePointDate("2019-07-10T22:55:56.845Z");
+  const date2 = humanizePointDate("2019-07-11T11:22:13.375Z");
   const total = 2000;
   return `<section class="trip-main__trip-info  trip-info">
             <div class="trip-info__main">

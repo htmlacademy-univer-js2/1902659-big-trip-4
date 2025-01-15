@@ -3,12 +3,18 @@ import EventListView from "../view/event-list-view";
 import FilterView from "../view/filter-view";
 import SortView from "../view/sort-view";
 import TripInfoView from "../view/trip-info-view";
-import { updateItem } from "../utils";
+import {
+  updateItem,
+  sortDateDown,
+  sortTimeDown,
+  sortPriceDown,
+} from "../utils";
 import { render } from "../framework/render";
 import PointPresenter from "./point-presenter";
+import { SortType } from "../const";
 
 export default class BoardPresenter {
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #infoComponent = new TripInfoView();
   #filterComponent = new FilterView();
   #eventListComponent = new EventListView();
@@ -17,6 +23,8 @@ export default class BoardPresenter {
   #pointsModel = null;
   #boardPoints = null;
   #pointPresenters = new Map();
+
+  #currentSortType = SortType.DATE_DOWN;
 
   constructor({ container, header, pointsModel }) {
     this.#container = container;
@@ -30,6 +38,9 @@ export default class BoardPresenter {
   }
 
   #renderSort() {
+    this.#sortComponent = new SortView({
+      onSortTypeChange: this.#handleSortTypeChange,
+    });
     render(this.#sortComponent, this.#container);
   }
 
@@ -63,6 +74,32 @@ export default class BoardPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
   }
+
+  #sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DATE_DOWN:
+        this.#boardPoints.sort(sortDateDown);
+        break;
+      case SortType.TIME_DOWN:
+        this.#boardPoints.sort(sortTimeDown);
+        break;
+      case SortType.PRICE_DOWN:
+        this.#boardPoints.sort(sortPriceDown);
+        break;
+    }
+    this.#currentSortType = sortType;
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+
+    this.#clearPointList();
+    this.#renderPoints();
+  };
 
   #handlePointChange = (updatedPoint) => {
     this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
