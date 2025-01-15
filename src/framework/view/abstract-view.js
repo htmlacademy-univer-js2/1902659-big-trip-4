@@ -1,8 +1,8 @@
-import {createElement} from '../render.js';
-import './abstract-view.css';
+import { createElement } from "../render.js";
+import "./abstract-view.css";
 
 /** @const {string} Класс, реализующий эффект "покачивания головой" */
-const SHAKE_CLASS_NAME = 'shake';
+const SHAKE_CLASS_NAME = "shake";
 
 /** @const {number} Время анимации в миллисекундах */
 const SHAKE_ANIMATION_TIMEOUT = 600;
@@ -16,7 +16,7 @@ export default class AbstractView {
 
   constructor() {
     if (new.target === AbstractView) {
-      throw new Error('Can\'t instantiate AbstractView, only concrete one.');
+      throw new Error("Can't instantiate AbstractView, only concrete one.");
     }
   }
 
@@ -38,7 +38,7 @@ export default class AbstractView {
    * @returns {string} Разметка элемента в виде строки
    */
   get template() {
-    throw new Error('Abstract method not implemented: get template');
+    throw new Error("Abstract method not implemented: get template");
   }
 
   /** Метод для удаления элемента */
