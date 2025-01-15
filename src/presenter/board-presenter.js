@@ -11,9 +11,11 @@ export default class BoardPresenter {
   filterComponent = new FilterView();
   eventListComponent = new EventListView();
 
-  constructor({ container, header }) {
+  constructor({ container, header, pointsModel }) {
     this.container = container;
     this.header = header;
+    this.pointsModel = pointsModel;
+    this.boardPoints = [...this.pointsModel.getPoints()];
   }
 
   init() {
@@ -23,8 +25,11 @@ export default class BoardPresenter {
     render(this.eventListComponent, this.container);
     render(new EventListView(), this.eventListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new WaypointView(), this.eventListComponent.getElement());
+    for (let i = 0; i < this.boardPoints.length; i++) {
+      render(
+        new WaypointView({ point: this.boardPoints[i] }),
+        this.eventListComponent.getElement()
+      );
     }
   }
 }

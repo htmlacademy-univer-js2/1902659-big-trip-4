@@ -3,7 +3,7 @@ import { createCreatePointTemplate } from "../template/create-point-template";
 
 export default class CreatePointView {
   getTemplate() {
-    return createCreatePointTemplate;
+    return createCreatePointTemplate();
   }
 
   getElement() {
