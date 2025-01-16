@@ -1,5 +1,5 @@
-import { getRandomPoint } from "../mock/point";
 import Observable from "../framework/observable";
+import { getRandomPoint } from "../utils";
 
 const POINT_COUNT = 3;
 

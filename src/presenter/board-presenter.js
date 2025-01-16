@@ -1,6 +1,5 @@
 import { RenderPosition } from "../render";
 import EventListView from "../view/event-list-view";
-import FilterView from "../view/filter-view";
 import SortView from "../view/sort-view";
 import TripInfoView from "../view/trip-info-view";
 import { sortDateDown, sortTimeDown, sortPriceDown } from "../utils";
@@ -9,48 +8,69 @@ import PointPresenter from "./point-presenter";
 import { SortType, UserAction, UpdateType, FilterType } from "../const";
 import NewPointPresenter from "./new-point-presenter.js";
 import EmptyListView from "../view/empty-list-view.js";
+import { filter } from "../utils";
+import FilterPresenter from "./filter-presenter.js";
 
 export default class BoardPresenter {
   #sortComponent = null;
   #infoComponent = new TripInfoView(0);
-  #filterComponent = new FilterView();
   #eventListComponent = new EventListView();
   #noPointComponent = null;
   #container = null;
   #header = null;
   #pointsModel = null;
+  #filterModel = null;
   #pointPresenters = new Map();
   #newPointPresenter = null;
+  #filterPresenter = null;
 
   #currentSortType = SortType.DATE_DOWN;
-  #currentFilterType = FilterType.EVERYTHING;
 
-  constructor({ container, header, pointsModel, onNewPointDestroy }) {
+  constructor({
+    container,
+    header,
+    pointsModel,
+    filterModel,
+    onNewPointDestroy,
+  }) {
     this.#container = container;
     this.#header = header;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
 
     this.#newPointPresenter = new NewPointPresenter({
       pointListContainer: this.#eventListComponent.element,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewPointDestroy,
     });
+
+    this.#filterPresenter = new FilterPresenter({
+      filterContainer: this.#header,
+      filterModel,
+      pointsModel,
+    });
   }
 
   init() {
     this.#renderBoard();
+    this.#filterPresenter.init();
   }
 
   get points() {
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[filterType](points);
+
     switch (this.#currentSortType) {
       case SortType.DATE_DOWN:
-        return [...this.#pointsModel.points].sort(sortDateDown);
+        return filteredPoints.sort(sortDateDown);
       case SortType.PRICE_DOWN:
-        return [...this.#pointsModel.points].sort(sortPriceDown);
+        return filteredPoints.sort(sortPriceDown);
       case SortType.TIME_DOWN:
-        return [...this.#pointsModel.points].sort(sortTimeDown);
+        return filteredPoints.sort(sortTimeDown);
     }
     return this.#pointsModel.points;
   }
@@ -63,19 +83,16 @@ export default class BoardPresenter {
     return summ;
   }
 
-  #handlePointChange = (updatedPoint) => {
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
-  };
-
   createPoint() {
     this.#currentSortType = SortType.DATE_DOWN;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
 
     this.#newPointPresenter.init();
   }
 
   #renderNoPoints() {
     this.#noPointComponent = new EmptyListView({
-      message: this.#currentFilterType,
+      filterType: this.#filterModel.filter,
     });
     render(this.#noPointComponent, this.#container);
   }
@@ -108,11 +125,10 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
-    render(this.#filterComponent, this.#header);
     this.#renderSort();
     this.#renderBoardList();
     if (this.#pointPresenters.size === 0) {
-      this.#renderNoPoints();
+      this.#renderNoPoints(this.#filterModel.filter);
     }
     this.#infoComponent.totalCost = this.totalCost;
     render(this.#infoComponent, this.#header, RenderPosition.AFTERBEGIN);
@@ -169,8 +185,11 @@ export default class BoardPresenter {
     this.#pointPresenters.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noPointComponent);
     remove(this.#infoComponent);
+
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DATE_DOWN;

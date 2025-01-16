@@ -1,5 +1,5 @@
 import { humanizePointDate, getDateDifference } from "../utils.js";
-import { findDestination, getOfferById } from "../mock/point.js";
+import { findDestination, getOfferById } from "../utils.js";
 
 function getOffersTemplate(offers, type) {
   const res = [];

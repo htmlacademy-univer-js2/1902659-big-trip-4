@@ -1,5 +1,5 @@
 import { humanizePointDate } from "../utils.js";
-import { getRandomCity } from "../mock/point.js";
+import { getRandomCity } from "../utils.js";
 
 function createTripInfoTemplate(totalCost) {
   const city1 = getRandomCity();

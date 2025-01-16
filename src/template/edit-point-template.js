@@ -1,9 +1,5 @@
 import { humanizePointDate } from "../utils";
-import {
-  findDestination,
-  findOffersByType,
-  getDestinations,
-} from "../mock/point";
+import { findDestination, findOffersByType, getDestinations } from "../utils";
 import { EVENTS } from "../const";
 
 function createDestListTemplate(destinations, destName) {

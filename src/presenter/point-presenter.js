@@ -2,7 +2,7 @@ import { render, remove, replace } from "../framework/render";
 import WaypointView from "../view/waypoint-view";
 import EditPointView from "../view/edit-point-view";
 import { UserAction, UpdateType } from "../const";
-import { getOfferPrice } from "../mock/point";
+import { getOfferPrice } from "../utils";
 
 const Mode = {
   DEFAULT: "DEFAULT",
