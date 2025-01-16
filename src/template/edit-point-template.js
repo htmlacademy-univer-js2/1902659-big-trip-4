@@ -1,12 +1,36 @@
-import { humanizeTaskDueDate } from "../utils";
-import { findDestination, getOffers } from "../mock/point";
+import { humanizePointDate } from "../utils";
+import {
+  findDestination,
+  findOffersByType,
+  getDestinations,
+} from "../mock/point";
 import { EVENTS } from "../const";
 
-function createOffersTemplate(offers) {
+function createDestListTemplate(destinations, destName) {
+  const dests = destinations
+    .map((item) => `<option value="${item.name}"></option>`)
+    .join(" ");
+  return `<input
+  class="event__input  event__input--destination"
+  id="event-destination-1"
+  type="text"
+  name="event-destination"
+  list="destination-list-1"
+  value="${destName}">
+  <datalist id="destination-list-1">
+      ${dests}
+  </datalist>`;
+}
+
+function createOffersTemplate(offers, point) {
   return offers
     .map(
       (item) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.id}-1" type="checkbox" name="event-offer-${item.id}">
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${
+  item.id
+}-1" type="checkbox" name="event-offer-${item.id}" value="${
+  item.id
+}" ${isCheckedOffer(item, point)}>
   <label class="event__offer-label" for="event-offer-${item.id}-1">
     <span class="event__offer-title">${item.title}</span>
     &plus;&euro;&nbsp;
@@ -15,6 +39,10 @@ function createOffersTemplate(offers) {
 </div>`
     )
     .join("");
+}
+
+function isCheckedOffer(offer, point) {
+  return point.offers.includes(offer.id) ? "checked" : "";
 }
 
 function isChecked(type, item) {
@@ -36,14 +64,18 @@ function createEventsTemplate(type) {
 }
 
 function createEditPointTemplate(point) {
-  const { basePrice, dateFrom, dateTo, destination, offers, type } = point;
-  const dateF = humanizeTaskDueDate(dateFrom);
-  const dateT = humanizeTaskDueDate(dateTo);
+  const { basePrice, dateFrom, dateTo, destination, type } = point;
+  const dateF = humanizePointDate(dateFrom);
+  const dateT = humanizePointDate(dateTo);
   const destName = findDestination(destination).name;
   const destDescription = findDestination(destination).description;
-  const offersList = getOffers(offers, type);
-  const offersTemplate = createOffersTemplate(offersList);
+  const offersList = findOffersByType(type);
+  const offersTemplate = createOffersTemplate(offersList, point);
   const eventsTemplate = createEventsTemplate(type);
+  const destinationsTemplate = createDestListTemplate(
+    getDestinations(),
+    destName
+  );
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -65,12 +97,9 @@ function createEditPointTemplate(point) {
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                      Flight
+                      ${type[0].toUpperCase() + type.slice(1)}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destName}" list="destination-list-1">
-                    <datalist id="destination-list-1">
-                      <option value="${destName}"></option>
-                    </datalist>
+                    ${destinationsTemplate}
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
