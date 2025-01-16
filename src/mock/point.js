@@ -33,10 +33,7 @@ const mockPoints = [
     dateTo: "2019-05-11T11:22:13.375Z",
     destination: "cfe416cq-10xa-ye10-8077-2fs9a01edcab",
     isFavorite: true,
-    offers: [
-      "b4c3e4e6-9053-42ce-b747-e281314baa31",
-      "a4c3e4e6-9053-42ce-b747-e281314baa31",
-    ],
+    offers: ["b4c3e4e6-9053-42ce-b747-e281314baa31"],
     type: "taxi",
   },
   {
@@ -45,11 +42,8 @@ const mockPoints = [
     dateTo: "2019-03-11T11:22:13.375Z",
     destination: "cfe416cq-10xa-ye10-8077-2fs9a01edcab",
     isFavorite: true,
-    offers: [
-      "b4c3e4e6-9053-42ce-b747-e281314baa31",
-      "a4c3e4e6-9053-42ce-b747-e281314baa31",
-    ],
-    type: "plane",
+    offers: ["e4c3e4e6-9053-42ce-b747-e281314baa31"],
+    type: "flight",
   },
 ];
 
@@ -70,17 +64,17 @@ const mockOptions = [
     ],
   },
   {
-    type: "plane",
+    type: "flight",
     offers: [
       {
         id: "e4c3e4e6-9053-42ce-b747-e281314baa31",
         title: "Upgrade to a business class",
-        price: 120,
+        price: 320,
       },
       {
         id: "d4c3e4e6-9053-42ce-b747-e281314baa31",
         title: "Upgrade to a elite class",
-        price: 200,
+        price: 300,
       },
     ],
   },
@@ -108,7 +102,7 @@ const mockDestination = [
   {
     id: "bfa5cb75-a1fe-4b77-a83c-0e528e910e04",
     description:
-      "Paris, is a beautiful city, a true asian pearl, with crowded streets.",
+      "Paris, is a beautiful city, a true pearl, with crowded streets.",
     name: "Paris",
     pictures: [
       {
@@ -133,6 +127,15 @@ function getRandomPoint() {
 function findDestination(destId) {
   const foundDest = mockDestination.find((item) => {
     if (item.id === destId) {
+      return item;
+    }
+  });
+  return foundDest ? foundDest : [];
+}
+
+function findDestinationId(destName) {
+  const foundDest = mockDestination.find((item) => {
+    if (item.name === destName) {
       return item;
     }
   });
@@ -171,6 +174,10 @@ function getEmptyPoint() {
   return emptyPoint;
 }
 
+function getDestinations() {
+  return mockDestination;
+}
+
 export {
   getRandomPoint,
   findDestination,
@@ -178,4 +185,7 @@ export {
   getRandomCity,
   getOffers,
   getEmptyPoint,
+  findOffersByType,
+  getDestinations,
+  findDestinationId,
 };
