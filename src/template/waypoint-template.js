@@ -1,6 +1,22 @@
-import { humanizePointDate, getDateDifference } from "../utils";
-import { findDestination } from "../mock/point";
-import { findSpecialOffer } from "../mock/point";
+import { humanizePointDate, getDateDifference } from "../utils.js";
+import { findDestination, getOfferById } from "../utils.js";
+
+function getOffersTemplate(offers, type) {
+  const res = [];
+  for (const offerId of offers) {
+    const offer = getOfferById(offerId, type);
+    res.push([offer.title, offer.price]);
+  }
+  return res
+    .map(
+      (item) => `<li class="event__offer">
+                    <span class="event__offer-title">${item[0]}</span>
+                    &plus;&euro;&nbsp;
+                    <span class="event__offer-price">${item[1]}</span>
+                  </li>`
+    )
+    .join(" ");
+}
 
 function createWaypointTemplate(point) {
   const { basePrice, dateFrom, dateTo, destination, isFavorite, offers, type } =
@@ -8,7 +24,7 @@ function createWaypointTemplate(point) {
   const dateF = humanizePointDate(dateFrom);
   const dateT = humanizePointDate(dateTo);
   const destName = findDestination(destination).name;
-  const offer = findSpecialOffer(type, offers[0]);
+  const offersTemplate = getOffersTemplate(offers, type);
   const eventDuration = getDateDifference(dateFrom, dateTo);
   const isFavoritePoint = isFavorite ? " event__favorite-btn--active" : "";
   return `<li class="trip-events__item">
@@ -31,11 +47,7 @@ function createWaypointTemplate(point) {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                  <li class="event__offer">
-                    <span class="event__offer-title">${offer}</span>
-                    &plus;&euro;&nbsp;
-                    <span class="event__offer-price">${basePrice}</span>
-                  </li>
+                  ${offersTemplate}
                 </ul>
                 <button class="event__favorite-btn${isFavoritePoint}" type="button">
                   <span class="visually-hidden">Add to favorite</span>

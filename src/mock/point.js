@@ -1,18 +1,12 @@
-import { getRandomArrayElement } from "../utils.js";
-import { CITIES } from "../const.js";
-import { nanoid } from "nanoid";
-
-const emptyPoint = [
-  {
-    basePrice: 0,
-    dateFrom: "2000-00-00T00:00:00Z",
-    dateTo: "2000-00-00T00:00:00Z",
-    destination: "a0",
-    isFavorite: false,
-    offers: [],
-    type: "taxi",
-  },
-];
+const emptyPoint = {
+  basePrice: 0,
+  dateFrom: "2024-01-01T00:00:00Z",
+  dateTo: "2025-01-01T00:00:00Z",
+  destination: "a0",
+  isFavorite: false,
+  offers: [],
+  type: "taxi",
+};
 
 const mockPoints = [
   {
@@ -94,7 +88,11 @@ const mockDestination = [
     name: "Chamonix",
     pictures: [
       {
-        src: "http://picsum.photos/300/200?r=0.0762563005163317",
+        src: "https://dummyimage.com/640x360/eee/aaa",
+        description: "Chamonix parliament building",
+      },
+      {
+        src: "https://dummyimage.com/640x360/eee/aaa",
         description: "Chamonix parliament building",
       },
     ],
@@ -106,86 +104,11 @@ const mockDestination = [
     name: "Paris",
     pictures: [
       {
-        src: "http://picsum.photos/300/200?r=0.0762563005163317",
+        src: "https://dummyimage.com/640x360/eee/aaa",
         description: "Paris parliament building",
       },
     ],
   },
 ];
 
-function getRandomCity() {
-  return getRandomArrayElement(CITIES);
-}
-
-function getRandomPoint() {
-  return {
-    id: nanoid(),
-    ...getRandomArrayElement(mockPoints),
-  };
-}
-
-function findDestination(destId) {
-  const foundDest = mockDestination.find((item) => {
-    if (item.id === destId) {
-      return item;
-    }
-  });
-  return foundDest ? foundDest : [];
-}
-
-function findDestinationId(destName) {
-  const foundDest = mockDestination.find((item) => {
-    if (item.name === destName) {
-      return item;
-    }
-  });
-  return foundDest ? foundDest : [];
-}
-
-function findOfferByType(optionType) {
-  return mockOptions.find((item) => {
-    if (item.type === optionType) {
-      return item;
-    }
-  }).offers[0];
-}
-
-function findOffersByType(optionType) {
-  const foundOption = mockOptions.find((item) => item.type === optionType);
-  return foundOption ? foundOption.offers : [];
-}
-
-function findSpecialOffer(optionType) {
-  return findOfferByType(optionType).title;
-}
-
-function getOffers(offersId, type) {
-  const offersAll = findOffersByType(type);
-  const foundOffers = [];
-  for (const offer of offersAll) {
-    if (offersId.includes(offer.id)) {
-      foundOffers.push(offer);
-    }
-  }
-  return foundOffers;
-}
-
-function getEmptyPoint() {
-  return emptyPoint;
-}
-
-function getDestinations() {
-  return mockDestination;
-}
-
-export {
-  getRandomPoint,
-  findDestination,
-  findSpecialOffer,
-  getRandomCity,
-  getOffers,
-  getEmptyPoint,
-  findOffersByType,
-  getDestinations,
-  findDestinationId,
-};
+export { emptyPoint, mockPoints, mockOptions, mockDestination };
