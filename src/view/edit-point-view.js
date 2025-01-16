@@ -1,10 +1,13 @@
 import AbstractStatefulView from "../framework/view/abstract-view";
 import { createEditPointTemplate } from "../template/edit-point-template";
 import { findOffersByType, findDestinationId } from "../mock/point";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 
 export default class EditPointView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleButtonClick = null;
+  #datepicker = null;
 
   constructor({ point, onFormSubmit, onButtonClick }) {
     super();
@@ -12,6 +15,15 @@ export default class EditPointView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleButtonClick = onButtonClick;
     this._restoreHandlers();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
   }
 
   get template() {
@@ -41,7 +53,40 @@ export default class EditPointView extends AbstractStatefulView {
     for (const checkbox of checkboxes) {
       checkbox.addEventListener("click", this.#offerClickHandler);
     }
+
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
   }
+
+  #setDatepickerFrom() {
+    const startTimeInput = this.element.querySelector("#event-start-time-1");
+    this.#datepicker = flatpickr(startTimeInput, {
+      dateFormat: "j F",
+      defaultDate: this._state.dateFrom,
+      onChange: this.#dateFromChangeHandler, // На событие flatpickr передаём наш колбэк
+    });
+  }
+
+  #setDatepickerTo() {
+    const endTimeInput = this.element.querySelector("#event-end-time-1");
+    this.#datepicker = flatpickr(endTimeInput, {
+      dateFormat: "j F",
+      defaultDate: this._state.dateTo,
+      onChange: this.#dateToChangeHandler, // На событие flatpickr передаём наш колбэк
+    });
+  }
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
 
   #destChangeHandler = (evt) => {
     evt.preventDefault();
