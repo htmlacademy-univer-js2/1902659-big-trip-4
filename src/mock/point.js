@@ -178,6 +178,13 @@ function getDestinations() {
   return mockDestination;
 }
 
+function getDestinationsNames() {
+  return mockDestination.map((dest) => dest.name);
+}
+function getDestinationNameById(destId) {
+  return mockDestination.find((item) => item.id === destId).name;
+}
+
 export {
   getRandomPoint,
   findDestination,
@@ -188,4 +195,6 @@ export {
   findOffersByType,
   getDestinations,
   findDestinationId,
+  getDestinationNameById,
+  getDestinationsNames,
 };

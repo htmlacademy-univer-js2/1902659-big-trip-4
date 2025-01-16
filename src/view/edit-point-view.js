@@ -7,32 +7,39 @@ import "flatpickr/dist/flatpickr.min.css";
 export default class EditPointView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleButtonClick = null;
-  #datepicker = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
+  #handleDeleteClick = null;
 
-  constructor({ point, onFormSubmit, onButtonClick }) {
+  constructor({ point, onFormSubmit, onButtonClick, onDeleteClick }) {
     super();
-    this._setState(EditPointView.parsePointToState(point));
+    this._setState(EditPointView.parsePointToState({ point }));
     this.#handleFormSubmit = onFormSubmit;
     this.#handleButtonClick = onButtonClick;
+    this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
   }
 
   removeElement() {
     super.removeElement();
 
-    if (this.#datepicker) {
-      this.#datepicker.destroy();
-      this.#datepicker = null;
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
     }
   }
 
   get template() {
-    return createEditPointTemplate(this._state);
+    return createEditPointTemplate({ state: this._state });
   }
 
   _restoreHandlers() {
     this.element
-      .querySelector("form") // event /+ event--edit
+      .querySelector("form")
       .addEventListener("submit", this.#formSubmitHandler);
 
     this.element
@@ -43,7 +50,16 @@ export default class EditPointView extends AbstractStatefulView {
       .querySelector(".event__type-group")
       .addEventListener("change", this.#typeChangeHandler);
 
+    this.element
+      .querySelector(".event__input--price")
+      .addEventListener("change", this.#priceChangeHandler);
+
+    this.element
+      .querySelector("form")
+      .addEventListener("reset", this.#formDeleteClickHandler);
+
     const dests = this.element.querySelectorAll(".event__input--destination");
+
     for (const dest of dests) {
       dest.addEventListener("change", this.#destChangeHandler);
     }
@@ -58,47 +74,81 @@ export default class EditPointView extends AbstractStatefulView {
     this.#setDatepickerTo();
   }
 
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(this._state.point);
+  };
+
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        basePrice: evt.target.valueAsNumber,
+      },
+    });
+  };
+
   #setDatepickerFrom() {
     const startTimeInput = this.element.querySelector("#event-start-time-1");
-    this.#datepicker = flatpickr(startTimeInput, {
-      dateFormat: "j F",
-      defaultDate: this._state.dateFrom,
-      onChange: this.#dateFromChangeHandler, // На событие flatpickr передаём наш колбэк
+    this.#datepickerFrom = flatpickr(startTimeInput, {
+      // eslint-disable-next-line camelcase
+      time_24hr: true,
+      enableTime: true,
+      dateFormat: "d/m/y H:i",
+      defaultDate: this._state.point.dateFrom,
+      onClose: this.#dateFromChangeHandler,
+      maxDate: this._state.point.dateTo,
     });
   }
 
   #setDatepickerTo() {
     const endTimeInput = this.element.querySelector("#event-end-time-1");
-    this.#datepicker = flatpickr(endTimeInput, {
-      dateFormat: "j F",
-      defaultDate: this._state.dateTo,
-      onChange: this.#dateToChangeHandler, // На событие flatpickr передаём наш колбэк
+    this.#datepickerTo = flatpickr(endTimeInput, {
+      // eslint-disable-next-line camelcase
+      time_24hr: true,
+      enableTime: true,
+      dateFormat: "d/m/y H:i",
+      defaultDate: this._state.point.dateTo,
+      onClose: this.#dateToChangeHandler,
+      minDate: this._state.point.dateFrom,
     });
   }
 
   #dateFromChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateFrom: userDate,
+    this._setState({
+      point: {
+        ...this._state.point,
+        dateFrom: userDate,
+      },
     });
+    this.#datepickerTo.set("minDate", this._state.point.dateFrom);
   };
 
   #dateToChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateTo: userDate,
+    this._setState({
+      point: {
+        ...this._state.point,
+        dateTo: userDate,
+      },
     });
+    this.#datepickerFrom.set("maxDate", this._state.point.dateTo);
   };
 
   #destChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      destination: findDestinationId(evt.target.value).id,
+      point: {
+        ...this._state.point,
+        destination: findDestinationId(evt.target.value).id,
+      },
     });
   };
 
   #offerClickHandler = (evt) => {
     evt.preventDefault();
     const value = evt.target.value;
-    let offersCopy = [...this._state.offers];
+    let offersCopy = [...this._state.point.offers];
     if (evt.target.checked) {
       if (!offersCopy.includes(value)) {
         offersCopy.push(value);
@@ -107,21 +157,27 @@ export default class EditPointView extends AbstractStatefulView {
       offersCopy = offersCopy.filter((item) => item !== value);
     }
     this.updateElement({
-      offers: offersCopy,
+      point: {
+        ...this._state.point,
+        offers: offersCopy,
+      },
     });
   };
 
   #typeChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      type: evt.target.value,
-      offers: findOffersByType(evt.target.value),
+      point: {
+        ...this._state.point,
+        type: evt.target.value,
+        offers: findOffersByType(evt.target.value),
+      },
     });
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this._state);
+    this.#handleFormSubmit(this._state.point);
   };
 
   #buttonClickHandler = (evt) => {
@@ -129,11 +185,10 @@ export default class EditPointView extends AbstractStatefulView {
     this.#handleButtonClick();
   };
 
-  static parsePointToState(task) {
-    return { ...task };
+  reset(point) {
+    this.updateElement(EditPointView.parsePointToState({ point }));
   }
 
-  static parseStateToPoint(state) {
-    return { ...state };
-  }
+  static parsePointToState = ({ point }) => ({ point });
+  static parseStateToPoint = (state) => state.point;
 }
