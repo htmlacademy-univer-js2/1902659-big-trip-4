@@ -20,6 +20,7 @@ export default class NewPointPresenter {
     this.#pointEditComponent = new EditPointView({
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick,
+      onButtonClick: this.#handleDeleteClick,
     });
     render(
       this.#pointEditComponent,
@@ -40,11 +41,10 @@ export default class NewPointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    this.#handleDataChange(
-      UserAction.ADD_POINT,
-      UpdateType.MINOR,
-      { id: nanoid(), ...point }
-    );
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, {
+      id: nanoid(),
+      ...point,
+    });
     this.destroy();
   };
 

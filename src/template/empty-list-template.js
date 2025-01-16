@@ -1,5 +1,6 @@
-function createEmptyListTemplate() {
-  const listText = "Click New Event to create your first point";
+function createEmptyListTemplate(
+  listText = "Click New Event to create your first point"
+) {
   return `<div class="page-body__container">
         <section class="trip-events">
           <h2 class="visually-hidden">Trip events</h2>
