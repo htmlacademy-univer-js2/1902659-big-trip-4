@@ -2,7 +2,12 @@ import { RenderPosition } from "../render";
 import EventListView from "../view/event-list-view";
 import SortView from "../view/sort-view";
 import TripInfoView from "../view/trip-info-view";
-import { sortDateDown, sortTimeDown, sortPriceDown } from "../utils";
+import {
+  sortDateDown,
+  sortTimeDown,
+  sortPriceDown,
+  getDestinationNameById,
+} from "../utils";
 import { render, remove } from "../framework/render";
 import PointPresenter from "./point-presenter";
 import { SortType, UserAction, UpdateType, FilterType } from "../const";
@@ -13,7 +18,7 @@ import FilterPresenter from "./filter-presenter.js";
 
 export default class BoardPresenter {
   #sortComponent = null;
-  #infoComponent = new TripInfoView(0);
+  #infoComponent = new TripInfoView(0, []);
   #eventListComponent = new EventListView();
   #noPointComponent = null;
   #container = null;
@@ -83,6 +88,14 @@ export default class BoardPresenter {
     return summ;
   }
 
+  getCities() {
+    const res = [];
+    for (const point of this.#pointsModel.points) {
+      res.push(getDestinationNameById(point.destination));
+    }
+    return res;
+  }
+
   createPoint() {
     this.#currentSortType = SortType.DATE_DOWN;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
@@ -131,6 +144,7 @@ export default class BoardPresenter {
       this.#renderNoPoints(this.#filterModel.filter);
     }
     this.#infoComponent.totalCost = this.totalCost;
+    this.#infoComponent.cities = this.getCities();
     render(this.#infoComponent, this.#header, RenderPosition.AFTERBEGIN);
   }
 

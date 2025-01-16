@@ -3,9 +3,20 @@ import { createTripInfoTemplate } from "../template/trip-info-template.js";
 
 export default class TripInfoView extends AbstractView {
   #totalCost = 0;
-  constructor({ totalCost = 0 }) {
+  #cities = [];
+
+  constructor({ totalCost = 0, cities = [] }) {
     super();
     this.#totalCost = totalCost;
+    this.#cities = cities;
+  }
+
+  set cities(newVal) {
+    this.#cities = newVal;
+  }
+
+  get cities() {
+    return this.#cities;
   }
 
   set totalCost(newPrice) {
@@ -17,6 +28,6 @@ export default class TripInfoView extends AbstractView {
   }
 
   get template() {
-    return createTripInfoTemplate(this.#totalCost);
+    return createTripInfoTemplate(this.#totalCost, this.#cities);
   }
 }

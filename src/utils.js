@@ -138,13 +138,16 @@ function getOfferPrice(typeName, offerId) {
 }
 
 function isPointFuture(point) {
-  return dayjs() < dayjs(point.dateFrom);
+  return dayjs().isBefore(dayjs(point.dateFrom));
 }
 function isPointPresent(point) {
-  return dayjs().date === dayjs(point.dateFrom).date;
+  return (
+    dayjs().isAfter(dayjs(point.dateFrom)) &&
+    dayjs().isBefore(dayjs(point.dateTo))
+  );
 }
 function isPointPast(point) {
-  return dayjs() > dayjs(point.dateFrom);
+  return dayjs().isAfter(dayjs(point.dateTo));
 }
 const filter = {
   [FilterType.EVERYTHING]: (points) => points,
